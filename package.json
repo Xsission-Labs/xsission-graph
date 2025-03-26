@@ -1,0 +1,45 @@
+{
+  "name": "xsission-function-visualizer-root",
+  "private": true,
+  "version": "0.1.1",
+  "description": "Visualize JavaScript and TypeScript function dependencies as an interactive graph",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xsission/xsission-function-visualizer.git"
+  },
+  "author": "Xsission Labs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "rimraf dist && rimraf packages/*/dist && rimraf packages/*/out",
+    "build": "npm run build:wasm && npm run build:webview && npm run build:extension",
+    "build:wasm": "cd packages/rust && wasm-pack build --target web",
+    "build:webview": "cd packages/webview && npm run build",
+    "build:extension": "cd packages/extension && npm run compile",
+    "package": "npm run build && vsce package",
+    "test": "npm run test:extension && npm run test:webview && npm run test:rust",
+    "test:extension": "cd packages/extension && npm test",
+    "test:webview": "cd packages/webview && npm test",
+    "test:rust": "cd packages/rust && cargo test",
+    "lint": "npm run lint:extension && npm run lint:webview",
+    "lint:extension": "cd packages/extension && npm run lint",
+    "lint:webview": "cd packages/webview && npm run lint"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.22.0",
+    "rimraf": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "d3": "^7.9.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

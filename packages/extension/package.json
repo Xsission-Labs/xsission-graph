@@ -1,0 +1,74 @@
+{
+  "name": "xsission-function-visualizer",
+  "displayName": "Function Dependency Visualizer",
+  "description": "Visualize JavaScript and TypeScript function dependencies as an interactive graph",
+  "version": "0.1.1",
+  "publisher": "XsissionLabs",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Visualization",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "javascript",
+    "typescript",
+    "visualization",
+    "dependency",
+    "graph"
+  ],
+  "activationEvents": [
+    "onCommand:xsission-function-visualizer.showDependencyGraph"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "xsission-function-visualizer.showDependencyGraph",
+        "title": "Show Function Dependency Graph"
+      }
+    ],
+    "configuration": {
+      "title": "Function Dependency Visualizer",
+      "properties": {
+        "xsission-function-visualizer.maxDepth": {
+          "type": "number",
+          "default": 5,
+          "description": "Maximum depth for function call analysis"
+        },
+        "xsission-function-visualizer.showExternalDependencies": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show dependencies from external modules"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts"
+  },
+  "dependencies": {
+    "d3": "^7.8.5"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.39.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4"
+  }
+} 

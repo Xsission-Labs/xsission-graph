@@ -1,0 +1,89 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build
+      run: npm run package
+    
+    - name: Test
+      run: npm test
+
+  rust:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+    
+    - name: Cache Rust dependencies
+      uses: Swatinem/rust-cache@v2
+    
+    - name: Build Rust
+      working-directory: ./packages/rust
+      run: cargo build --release
+    
+    - name: Test Rust
+      working-directory: ./packages/rust
+      run: cargo test
+    
+    - name: Build WASM
+      working-directory: ./packages/rust
+      run: |
+        cargo install wasm-pack
+        wasm-pack build --target web
+
+  package:
+    needs: [build, rust]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Package Extension
+      run: |
+        npm install -g @vscode/vsce
+        vsce package
+
+    - name: Upload VSIX
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension
+        path: "*.vsix" 
