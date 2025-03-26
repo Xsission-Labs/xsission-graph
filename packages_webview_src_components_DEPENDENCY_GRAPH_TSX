@@ -1,15 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-// Create simpler type definitions that don't depend on specific d3 types
-interface DragEvent {
-  active: boolean;
-  sourceEvent: MouseEvent;
-  subject: any;
-  x: number;
-  y: number;
-}
-
 interface Node {
   id: string;
   name: string;
@@ -38,7 +29,7 @@ interface DependencyGraphProps {
 
 export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const simulationRef = useRef<any>(null);
+  const simulationRef = useRef<d3.Simulation<Node, Link> | null>(null);
 
   useEffect(() => {
     // Listen for messages from the extension
@@ -132,13 +123,13 @@ export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
         }
 
         const data = simulationRef.current?.nodes() || [];
-        const matches = data.filter((node: any) => 
+        const matches = data.filter(node => 
           node.name.toLowerCase().includes(query)
         ).slice(0, 10);
 
         if (matches.length > 0) {
           searchResults.innerHTML = '';
-          matches.forEach((node: any) => {
+          matches.forEach(node => {
             const item = document.createElement('div');
             item.className = 'search-result-item';
             item.textContent = node.name;
@@ -205,7 +196,7 @@ export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
       .call(d3.drag<SVGGElement, Node>()
         .on('start', dragstarted)
         .on('drag', dragged)
-        .on('end', dragended) as any
+        .on('end', dragended)
       );
 
     // Add circles to each node group
@@ -263,18 +254,18 @@ export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
     });
 
     // Define drag functions
-    function dragstarted(event: any, d: Node) {
+    function dragstarted(event: d3.D3DragEvent<SVGGElement, Node, Node>, d: Node) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
 
-    function dragged(event: any, d: Node) {
+    function dragged(event: d3.D3DragEvent<SVGGElement, Node, Node>, d: Node) {
       d.fx = event.x;
       d.fy = event.y;
     }
 
-    function dragended(event: any, d: Node) {
+    function dragended(event: DragEvent, d: Node) {
       if (!event.active) simulation.alphaTarget(0);
       if (!d.fixed) {
         d.fx = null;
