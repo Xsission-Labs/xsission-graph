@@ -1,18 +1,19 @@
-# Dependency directories
+# Dependency Directories (Node.js)
 node_modules/
 .pnp
 .pnp.js
 
-# Build outputs
-dist/
-out/
-*.vsix
-target/
-pkg/
-wasm-pack.log
-**/*.rs.bk
+# Build Outputs
+dist/                 # Node.js/TypeScript builds (webview, extension)
+out/                  # VS Code extension TypeScript output
+*.vsix                # Compiled VS Code extension
+target/               # Rust build directory
+pkg/                  # Rust packaging output
+wasm-pack.log         # Rust WASM build log
+**/*.rs.bk            # Rust backup files
+**/*.wasm             # Compiled WebAssembly files (unless tracked)
 
-# Coverage and testing
+# Coverage and Testing
 coverage/
 .nyc_output/
 
@@ -30,7 +31,7 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# OS files
+# OS and Editor Files
 .DS_Store
 Thumbs.db
 *.swp
@@ -43,27 +44,18 @@ Thumbs.db
 .env.test.local
 .env.production.local
 
-# TypeScript cache
+# TypeScript Cache
 *.tsbuildinfo
 
-# Optional npm cache directory
+# Optional Node.js/Yarn Extras
 .npm
-
-# Optional eslint cache
 .eslintcache
-
-# Optional REPL history
 .node_repl_history
-
-# Yarn Integrity file
 .yarn-integrity
 
-# Rust specific ignores
-Cargo.lock
-**/*.rs.bk
-target/
-pkg/
+# Rust-Specific
+Cargo.lock            # Optional: Keep if you want pinned builds
 
-# Ignore all temporary files
+# Temporary Files
 *.tmp
-*.temp 
+*.temp
