@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, ReactElement } from 'react';
 import * as d3 from 'd3';
 
 // Create simpler type definitions that don't depend on specific d3 types
@@ -36,7 +36,7 @@ interface DependencyGraphProps {
   vscode: any;
 }
 
-export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
+export const DependencyGraph = ({ vscode }: DependencyGraphProps): ReactElement => {
   const svgRef = useRef<SVGSVGElement>(null);
   const simulationRef = useRef<any>(null);
 
@@ -202,11 +202,13 @@ export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
       .data(data.nodes, (d: any) => d.id)
       .join('g')
       .attr('class', 'node')
-      .call(d3.drag<SVGGElement, Node>()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended) as any
-      );
+      .call((selection: any) => {
+        const drag = d3.drag<SVGGElement, Node>()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended);
+        return drag(selection);
+      });
 
     // Add circles to each node group
     nodeGroup.selectAll('circle')
@@ -323,6 +325,6 @@ export const DependencyGraph: React.FC<DependencyGraphProps> = ({ vscode }) => {
   };
 
   return (
-    <svg ref={svgRef} id="graph" />
+    <svg ref={svgRef} id="graph"></svg>
   );
 }; 
